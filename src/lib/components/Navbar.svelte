@@ -14,12 +14,12 @@
 	});
 </script>
 
-<nav class="bg-gray-900 shadow-lg">
+<nav class="bg-gray-900 shadow-2xl z-10 sticky top-0">
 	<div class="px-8 mx-auto">
 		<div class="flex justify-between">
 			<div class="flex space-x-4">
 				<!-- logo -->
-				<div class="glow">
+				<div>
 					<a href={'/'} class="flex items-center py-5 px-2 text-gray-100">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -42,11 +42,9 @@
 
 				<!-- primary nav -->
 				<div class="hidden md:flex items-center space-x-1">
-					<!-- <a href={'/algorithms'} class="py-5 px-3 text-gray-100 hover:text-gray-300">Algorithms</a>
-					<a href={'/data-structures'} class="py-5 px-3 text-gray-100 hover:text-gray-300"
-						>Data Structures</a
-					> -->
-					<a href={'/roadmap'} class="nav-link py-5 px-3 text-gray-100 hover:text-gray-300"
+					<a
+						href={'/roadmap'}
+						class="nav-link py-5 px-3 text-gray-100 hover:text-gray-300 tracking-tight font-medium"
 						>Roadmap</a
 					>
 				</div>
@@ -54,18 +52,14 @@
 
 			<!-- secondary nav -->
 			<div class="hidden md:flex items-center space-x-1">
-				<!-- <a
-					href={'#'}
-					class="py-2 px-3 bg-cyan-400 hover:bg-cyan-300 text-blue-950 hover:text-blue-900 rounded font-semibold transition-colors"
-					>Sign in</a
-				> -->
-				<!-- <a href={'#'} class="py-5 px-1">🇬🇧</a>
-				<p class="py-5 px-1">/</p>
-				<a href={'#'} class="py-5 px-1">🇫🇷</a> -->
-				<a href={'/algorithms'} class="nav-link py-5 px-3 text-gray-100 hover:text-gray-300"
+				<a
+					href={'/algorithms'}
+					class="nav-link py-5 px-3 text-gray-100 hover:text-gray-300 tracking-tight font-medium"
 					>Algorithms</a
 				>
-				<a href={'/data-structures'} class="nav-link py-5 px-3 text-gray-100 hover:text-gray-300"
+				<a
+					href={'/data-structures'}
+					class="nav-link py-5 px-3 text-gray-100 hover:text-gray-300 tracking-tight font-medium"
 					>Data Structures</a
 				>
 			</div>
@@ -130,39 +124,5 @@
 	.nav-link:hover::before {
 		width: 100%; /* Expand to the edges */
 		left: 0; /* Start from the left */
-	}
-
-	.glow {
-		position: relative;
-		display: inline-block;
-		transition:
-			transform 0.3s ease-out,
-			box-shadow 0.3s ease-out;
-	}
-
-	.glow:hover::before {
-		content: '';
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 100%;
-		border-radius: 50%;
-		background-color: rgba(255, 215, 0, 0.5);
-		animation: glowing 1.5s ease-in-out infinite;
-		z-index: -1;
-	}
-
-	@keyframes glowing {
-		0% {
-			box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
-		}
-		50% {
-			box-shadow: 0 0 20px 10px rgba(255, 215, 0, 0);
-		}
-		100% {
-			box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
-		}
 	}
 </style>

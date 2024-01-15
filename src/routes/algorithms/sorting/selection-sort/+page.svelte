@@ -3,7 +3,7 @@
 	import { CodeBlock } from 'svhighlight';
 	import { onMount, onDestroy } from 'svelte';
 
-	// ======= Bubble Sort Visualization =======
+	// ======= Selection Sort Visualization =======
 
 	let n = 20;
 	let array = [];
@@ -48,26 +48,32 @@
 		node.connect(audioCtx.destination);
 	}
 
-	function bubbleSort(array) {
+	function selectionSort(array) {
 		const moves = [];
-		let swapped;
-		do {
-			swapped = false;
-			for (let j = 1; j < array.length; j++) {
+
+		for (let i = 0; i < array.length - 1; i++) {
+			let minIndex = i;
+
+			for (let j = i + 1; j < array.length; j++) {
 				moves.push({
-					indices: [j - 1, j],
+					indices: [i, j],
 					type: 'compare'
 				});
-				if (array[j - 1] > array[j]) {
-					moves.push({
-						indices: [j - 1, j],
-						type: 'swap'
-					});
-					[array[j - 1], array[j]] = [array[j], array[j - 1]];
-					swapped = true;
+
+				if (array[j] < array[minIndex]) {
+					minIndex = j;
 				}
 			}
-		} while (swapped);
+
+			if (minIndex !== i) {
+				moves.push({
+					indices: [i, minIndex],
+					type: 'swap'
+				});
+				[array[i], array[minIndex]] = [array[minIndex], array[i]];
+			}
+		}
+
 		return moves;
 	}
 
@@ -99,7 +105,7 @@
 		playBtn.disabled = true;
 		playBtn.style.display = 'none';
 		const copy = [...array];
-		movesQueue = bubbleSort(copy);
+		movesQueue = selectionSort(copy); // Changed to selection sort
 		continueAnimation();
 		const pauseBtn = document.querySelector('#pauseBtn');
 		pauseBtn.style.display = 'inline-block';
@@ -107,7 +113,6 @@
 		pauseBtn.textContent = 'Pause ⏸️';
 		animationPaused = false;
 	}
-
 	function continueAnimation() {
 		if (movesQueue.length > 0 && !animationPaused) {
 			const move = movesQueue.shift();
@@ -162,9 +167,9 @@
 	$: totalComparisons;
 	$: totalArrayAccesses;
 
-	// ======= End of Bubble Sort Visualization =======
+	// ======= End of Selection Sort Visualization =======
 
-	// ======= Code Highlights for Bubble Sort =======
+	// ======= Code Highlights for Selection Sort =======
 
 	let codeLang = 'Python';
 
@@ -172,75 +177,88 @@
 		${
 			codeLang === 'Python'
 				? `
-def bubbleSort(arr): // arr is an array of integers to be sorted
-	for i in range(len(arr)): // Traverse through all array elements
-		for j in range(0, len(arr) - i - 1): // Last i elements are already in place
-			if arr[j] > arr[j + 1]: // Swap if the element found is greater than the next element
-				arr[j], arr[j + 1] = arr[j + 1], arr[j] // Swap elements
-	return arr
-		`
-				: codeLang === 'C++'
-					? `
-int[] bubbleSort(int arr[], int n) { // arr is an array of integers to be sorted, n is the size of the array
-	for (int i = 0; i < n - 1; i++) { // Traverse through all array elements
-		for (int j = 0; j < n - i - 1; j++) { // Last i elements are already in place
-			if (arr[j] > arr[j + 1]) { // Swap if the element found is greater than the next element
-				swap(arr[j], arr[j + 1]); // Swap elements
-			}
-		}
-	}
-	return arr;
-}
+def selection_sort(arr):
+    for i in range(len(arr)): # Loop through array
+        min_idx = i # Set min index to current index
+        for j in range(i + 1, len(arr)): # Loop through unsorted part of array
+            if arr[min_idx] > arr[j]: # If current element is less than min element
+                min_idx = j # Set min index to current index
+        arr[i], arr[min_idx] = arr[min_idx], arr[i] # Swap min element with first element of unsorted array
 
-void swap(int *x, int *y) { // Helper method swap, where x and y are pointers to integers
-	int temp = *x; // Dereference the pointers to get the values
-	*x = *y; // Swap the values
-	*y = temp; // Swap the values
-}
-		`
-					: codeLang === 'Java'
+    return arr
+                `
+				: ''
+		}
+        ${
+					codeLang === 'C++'
 						? `
-int[] bubbleSort(int arr[]) { // arr is an array of integers to be sorted
-	int n = arr.length; // Get the size of the array
-	for (int i = 0; i < n - 1; i++) { // Traverse through all array elements
-		for (int j = 0; j < n - i - 1; j++) { // Last i elements are already in place
-			if (arr[j] > arr[j + 1]) { // Swap if the element found is greater than the next element
-				int temp = arr[j]; // Swap elements
-				arr[j] = arr[j + 1]; // Swap elements
-				arr[j + 1] = temp; // Swap elements
-			}
-		}
-	}
-	return arr;
+int[] selection_sort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) { // Loop through array
+        int min_idx = i; // Set min index to current index
+        for (int j = i + 1; j < n; j++) { // Loop through unsorted part of array
+            if (arr[j] < arr[min_idx]) { // If current element is less than min element
+                min_idx = j; // Set min index to current index
+            }
+        }
+        swap(arr[min_idx], arr[i]); // Swap min element with first element of unsorted array
+    }
+    return arr;
 }
-		`
-						: codeLang === 'Go'
-							? `
-func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
-	n := len(arr) // Get the size of the array
-	for i := 0; i < n - 1; i++ { // Traverse through all array elements
-		for j := 0; j < n - i - 1; j++ { // Last i elements are already in place
-			if arr[j] > arr[j + 1] { // Swap if the element found is greater than the next element
-				arr[j], arr[j + 1] = arr[j + 1], arr[j] // Swap elements
-			}
-		}
-	}
-	return arr
+                `
+						: ''
+				}
+        
+        ${
+					codeLang === 'Java'
+						? `
+int[] selectionSort(int arr[]) {
+    int n = arr.length; // Get length of array
+    for (int i = 0; i < n - 1; i++) { // Loop through array
+        int min_idx = i; // Set min index to current index
+        for (int j = i + 1; j < n; j++) { // Loop through unsorted part of array
+            if (arr[j] < arr[min_idx]) { // If current element is less than min element
+                min_idx = j; // Set min index to current index
+            }
+        }
+        int temp = arr[min_idx];
+        arr[min_idx] = arr[i]; // Swap min element with first element of unsorted array
+        arr[i] = temp;  // Swap min element with first element of unsorted array
+    }
+    return arr;
 }
-		`
-							: ''
-		}
-	`;
+                `
+						: ''
+				}
+
+        ${
+					codeLang === 'Go'
+						? `
+func selectionSort(arr []int) []int{
+    for i := 0; i < len(arr) - 1; i++ { // Loop through array
+        min_idx := i // Set min index to current index
+        for j := i + 1; j < len(arr); j++ { // Loop through unsorted part of array
+            if arr[j] < arr[min_idx] { // If current element is less than min element
+                min_idx = j // Set min index to current index
+            }
+        }
+        arr[i], arr[min_idx] = arr[min_idx], arr[i] // Swap min element with first element of unsorted array
+    }
+    return arr
+}
+                `
+						: ''
+				}
+    `;
 </script>
 
 <svelte:head>
-	<title>Bubble Sort - {websiteName}</title>
+	<title>Selection Sort - {websiteName}</title>
 </svelte:head>
 
 <div class="container mx-auto mb-20">
 	<!-- Title -->
 	<div class="flex justify-center items-center px-20">
-		<h1 class="text-6xl font-bold white">Bubble Sort</h1>
+		<h1 class="text-6xl font-bold white">Selection Sort</h1>
 	</div>
 </div>
 
@@ -269,7 +287,7 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 					<div class="inline-flex items-center">
 						<p class="text-base text-gray-200">Stable Sorting?</p>
 					</div>
-					<p class="text-xl font-bold text-blue-600">✔️ Yes</p>
+					<p class="text-xl font-bold text-blue-600">❌ No</p>
 				</div>
 				<div class="mb-1">
 					<p class="text-xs text-gray-200 mt-2">
@@ -383,110 +401,25 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 <section class="bg-gray-900">
 	<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
 		<div class="max-w-screen-lg sm:text-lg text-gray-400">
-			<h2 class="mb-10 text-4xl tracking-tight font-bold text-white">Understanding Bubble Sort</h2>
+			<h2 class="mb-10 text-4xl tracking-tight font-bold text-white">
+				Understanding Selection Sort
+			</h2>
 			<p class="mb-4 font-light">
-				Bubble Sort is a simple sorting algorithm that works by repeatedly stepping through the
-				list, comparing adjacent elements, and swapping them if they are in the wrong order. The
-				algorithm gets its name because smaller elements "bubble" to the top of the list during each
-				pass.
+				Selection Sort is a simple sorting algorithm that works by repeatedly finding the minimum
+				element from the unsorted part of the array and placing it at the beginning of the array.
+				The algorithm maintains two subarrays in a given array:
 			</p>
-			<p class="mb-10 font-light">
-				It is a stable sorting algorithm, meaning that the relative order of equal sort items is
-				preserved. It is also an in-place sorting algorithm, meaning that it does not require any
-				additional memory to sort the array.
-			</p>
+			<ul class="list-disc pl-6 mb-4">
+				<li>The subarray which is already sorted.</li>
+				<li>Remaining subarray which is unsorted.</li>
+			</ul>
+
 			<p class="mb-4 font-medium">During the sorting process there are the following operations:</p>
-			<ul class="list-disc pl-6 mb-4">
-				<li>Swaps: Elements are swapped when they are out of order.</li>
-				<li>Comparisons: Elements are compared to determine if a swap is needed.</li>
-				<li>
-					Array Accesses: Accessing array elements for reading and writing during swaps and
-					comparisons.
-				</li>
-			</ul>
-			<p class="mb-4 font-medium">
-				For example, given the array <code>[5, 1, 4, 2, 8]</code>, the following steps are taken to
-				sort the array in ascending order:
-			</p>
-			<ul class="list-disc pl-6 mb-4">
-				<li>
-					First Pass: <code
-						>[<span class="text-red-500">5</span>, <span class="text-red-500">1</span>,
-						<span class="text-green-500">4</span>, <span class="text-green-500">2</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-red-500">1</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">4</span>, <span class="text-green-500">2</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-green-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-red-500">5</span>, <span class="text-green-500">2</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-green-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-red-500">2</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-green-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-red-500">2</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-green-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-red-500">2</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-green-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-red-500">2</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-				</li>
 
-				<li>
-					Second Pass: <code
-						>[<span class="text-red-500">1</span>, <span class="text-green-500">4</span>,
-						<span class="text-red-500">2</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-red-500">1</span>, <span class="text-green-500">4</span>,
-						<span class="text-red-500">2</span>, <span class="text-red-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-red-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-green-500">2</span>, <span class="text-green-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-					<code
-						>[<span class="text-red-500">1</span>, <span class="text-red-500">4</span>,
-						<span class="text-green-500">2</span>, <span class="text-green-500">5</span>,
-						<span class="text-green-500">8</span>]</code
-					>
-					<br />
-				</li>
+			<ul class="list-disc pl-6 mb-4">
+				<li>Find the minimum element in the unsorted subarray.</li>
+				<li>Swap the found minimum element with the first element of the unsorted subarray.</li>
 			</ul>
-
-			<p class="mb-4 font-medium">
-				After the first pass, the largest element is guaranteed to be at the end of the array. After
-				the second pass, the second largest element is guaranteed to be in the second to last
-				position. The algorithm repeats this process until the array is completely sorted.
-			</p>
 		</div>
 	</div>
 </section>
@@ -496,7 +429,7 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 	<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
 		<div class="max-w-screen-lg sm:text-lg text-gray-400">
 			<h2 class="mb-10 text-4xl tracking-tight font-bold text-white">Complexity Analysis</h2>
-			<p class="mb-4 font-medium">Bubble Sort has the following complexities:</p>
+			<p class="mb-4 font-medium">Selection Sort has the following complexities:</p>
 
 			<div class="relative overflow-x-auto mb-4">
 				<table class="w-full text-sm text-left rtl:text-right text-gray-400">
@@ -512,7 +445,7 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 							<th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
 								Best Case
 							</th>
-							<td class="px-6 py-4 text-gray-200"> Ω(n) </td>
+							<td class="px-6 py-4 text-gray-200"> Ω(n&sup2;) </td>
 							<td class="px-6 py-4 text-gray-200"> Ω(1) </td>
 						</tr>
 						<tr class="bg-gray-950 border-gray-700">
@@ -534,8 +467,10 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 			</div>
 
 			<p class="mb-4 font-medium">
-				Bubble Sort is a stable sorting algorithm, meaning that the relative order of equal sort
-				items is preserved.
+				It has a quadratic time complexity, meaning that the number of steps required to sort the
+				array grows quadratically as the size of the array increases. This is because the algorithm
+				has to perform a linear scan of the array for each element in the array. It also has a
+				linear space complexity.
 			</p>
 		</div>
 	</div>
@@ -547,7 +482,7 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 		<div class="max-w-screen-lg sm:text-lg text-gray-400">
 			<h2 class="mb-10 text-4xl tracking-tight font-bold text-white">Code Implementation</h2>
 			<p class="mb-4 font-medium">
-				Bubble Sort can be implemented in a variety of languages. Below are some examples of
+				Selection Sort can be implemented in a variety of languages. Below are some examples of
 				implementations in Python, C++, Go, and Java.
 			</p>
 
@@ -599,19 +534,17 @@ func bubbleSort(arr []int) []int { // arr is an array of integers to be sorted
 	<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
 		<div class="max-w-screen-lg sm:text-lg text-gray-400">
 			<h2 class="mb-10 text-4xl tracking-tight font-bold text-white">
-				When should Bubble Sort be used?
+				When should Selection Sort be used?
 			</h2>
 			<p class="mb-4 font-light">
-				Bubble Sort is a simple sorting algorithm that is used when the number of elements in the
-				array is small. It is also used when the array is almost sorted (only a few elements are
-				misplaced). Bubble Sort is not a practical sorting algorithm when the array is large and
-				contains a large number of inversions. When we say large, we mean that the array contains
-				<code>n</code> elements where <code>n</code> is greater than 10,000.
+				Selection Sort is a simple sorting algorithm that works well for small data sets or when you
+				are not concerned about performance. It is also a good choice when memory space is limited,
+				as it is an in-place sorting algorithm.
 			</p>
 			<p class="font-light">
-				Funnily enough, bubble sort is not used in real-world applications because it is not
-				efficient and does not scale well. However, it is a good algorithm to learn because it is
-				simple to understand and implement.
+				In the real world, Selection Sort is rarely used because it is very inefficient for large
+				data sets. It is also not a stable sorting algorithm, meaning that the relative order of
+				equal sort items is not preserved.
 			</p>
 		</div>
 	</div>
