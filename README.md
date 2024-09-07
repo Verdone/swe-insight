@@ -1,8 +1,8 @@
-# Your Website Name
+# SWE Insight
 
 ## Overview
 
-Welcome to SWE Insight, a comprehensive platform for exploring data structures, algorithms, system design, and software engineering best practices. Whether you are a beginner looking to start with the basics or an experienced developer aiming to deepen your knowledge, this website has something for everyone.
+Welcome to the open-source repository of SWE Insight; whether you are a beginner looking to start with the basics or an experienced developer aiming to deepen your knowledge, this website has something for everyone.
 
 ## Features
 
